@@ -73,17 +73,76 @@ def parse_customer_request(user_input: str) -> Dict[str, Any]:
         """
         
         response = model.generate_content(prompt)
-        result = json.loads(response.text.strip())
+        # Clean the response text to handle potential formatting issues
+        response_text = response.text.strip()
+        # Remove any markdown formatting if present
+        if response_text.startswith('```json'):
+            response_text = response_text[7:]
+        if response_text.endswith('```'):
+            response_text = response_text[:-3]
+        
+        result = json.loads(response_text.strip())
         return result
     except Exception as e:
-        # Fallback parsing
+        print(f"AI parsing error: {e}")  # Debug output
+        # Fallback parsing with better logic
+        user_lower = user_input.lower()
+        
+        # Simple keyword-based parsing as fallback
+        passengers = "3-4"
+        if any(word in user_lower for word in ["7", "seven", "large", "big"]):
+            passengers = "7+"
+        elif any(word in user_lower for word in ["1", "one", "2", "two", "couple"]):
+            passengers = "1-2"
+        elif any(word in user_lower for word in ["5", "five", "6", "six"]):
+            passengers = "5-6"
+        
+        car_type = "sedan"
+        if any(word in user_lower for word in ["suv", "sport utility"]):
+            car_type = "suv"
+        elif any(word in user_lower for word in ["van", "minivan"]):
+            car_type = "van"
+        elif any(word in user_lower for word in ["hatchback", "hatch"]):
+            car_type = "hatchback"
+        elif any(word in user_lower for word in ["luxury", "luxurious", "premium", "expensive"]):
+            car_type = "luxury"
+        
+        energy_type = "fuel"
+        if any(word in user_lower for word in ["electric", "ev", "battery"]):
+            energy_type = "electric"
+        elif any(word in user_lower for word in ["hybrid"]):
+            energy_type = "hybrid"
+        
+        style = "practical"
+        if any(word in user_lower for word in ["luxury", "luxurious", "premium"]):
+            style = "luxury"
+        elif any(word in user_lower for word in ["family", "kids", "children"]):
+            style = "family"
+        elif any(word in user_lower for word in ["sport", "sports", "fast", "performance"]):
+            style = "sport"
+        
+        duration = 1
+        for word in user_lower.split():
+            if word.isdigit():
+                duration = int(word)
+                break
+        
+        location = "Not specified"
+        # Simple location detection
+        if "bangkok" in user_lower:
+            location = "Bangkok"
+        elif any(word in user_lower for word in ["beach", "coast", "seaside"]):
+            location = "Beach"
+        elif any(word in user_lower for word in ["city", "urban", "downtown"]):
+            location = "City"
+        
         return {
-            "passengers": "3-4",
-            "car_type": "sedan",
-            "energy_type": "fuel",
-            "style": "practical",
-            "duration": 1,
-            "location": "Not specified",
+            "passengers": passengers,
+            "car_type": car_type,
+            "energy_type": energy_type,
+            "style": style,
+            "duration": duration,
+            "location": location,
             "travel_purpose": "weekend"
         }
 
@@ -599,20 +658,29 @@ def car_finder():
 @rt("/ai-search", methods=["POST"])
 def ai_search(request: Request):
     """Handle AI-powered car search requests"""
-    form_data = request.form
-    user_input = form_data.get("ai_search", "")
-    
-    if not user_input:
-        return Div("Please enter your car requirements.", style="color: red;")
-    
-    # Parse the user's natural language request
-    parsed_request = parse_customer_request(user_input)
-    
-    # Generate AI recommendations
-    recommendations = generate_ai_recommendations(parsed_request)
-    
-    # Generate chatbot response
-    chatbot_response = generate_chatbot_response(parsed_request, recommendations)
+    try:
+        form_data = request.form
+        user_input = form_data.get("ai_search", "")
+        
+        if not user_input:
+            return Div("Please enter your car requirements.", style="color: red;")
+        
+        # Parse the user's natural language request
+        parsed_request = parse_customer_request(user_input)
+        
+        # Generate AI recommendations
+        recommendations = generate_ai_recommendations(parsed_request)
+        
+        # Generate chatbot response
+        chatbot_response = generate_chatbot_response(parsed_request, recommendations)
+    except Exception as e:
+        print(f"AI search error: {e}")  # Debug output
+        return Div(
+            H3("🚨 Error Processing Request"),
+            P("We encountered an issue processing your request. Please try again or use our traditional car finder."),
+            P(f"Error details: {str(e)}"),
+            Button("Use Traditional Finder", href="/car-finder", cls="secondary")
+        )
     
     return Div(
         # Show parsed request
@@ -1355,6 +1423,37 @@ def ai_demo():
             create_footer()
         )
     )
+
+# Debug route to test basic functionality
+@rt("/test")
+def test():
+    """Simple test route to verify the app is working"""
+    return Html(
+        Head(Title("Test - Nova")),
+        Body(
+            H1("Nova Test Page"),
+            P("If you can see this, the basic FastHTML setup is working!"),
+            P("Testing AI configuration..."),
+            Div(id="ai-test-result")
+        )
+    )
+
+@rt("/test-ai")
+def test_ai():
+    """Test AI functionality"""
+    try:
+        # Test basic AI connection
+        response = model.generate_content("Hello, are you working?")
+        return Div(
+            H3("✅ AI Test Successful!"),
+            P(f"AI Response: {response.text[:100]}...")
+        )
+    except Exception as e:
+        return Div(
+            H3("❌ AI Test Failed"),
+            P(f"Error: {str(e)}"),
+            P("This might be due to API key issues or network connectivity.")
+        )
 
 if __name__ == "__main__":
     serve()
