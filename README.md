@@ -15,6 +15,7 @@ Nova is your trusted partner in finding the perfect car for you. We deliver the 
 
 - **Backend**: FastHTML (Python)
 - **Frontend**: HTML5, CSS3, Pico CSS Framework
+- **AI Integration**: Google Gemini AI for natural language processing
 - **Interactivity**: HTMX for dynamic interactions
 - **Styling**: Custom CSS with modern gradients and responsive design
 
@@ -47,25 +48,64 @@ python app.py
 ## 📱 Features
 
 ### Core Functionality
-- **Homepage**: Hero section with company branding and quick car finder
+- **Homepage**: Hero section with company branding and AI-powered car search
+- **AI Search**: Natural language processing to understand customer requests
 - **Car Finder**: Intelligent questionnaire to match customers with perfect vehicles
+- **AI Demo**: Interactive demonstration of AI search capabilities
 - **Services**: Comprehensive overview of rental, sales, maintenance, and insurance
 - **Pricing**: Transparent tier structure with flexible rental periods
 - **Contact**: Multiple contact methods including live chat integration
 - **About**: Company story, values, and mission
 
 ### Interactive Elements
+- **🤖 AI-Powered Search**: Natural language car matching using Google Gemini AI
 - **Car Matching**: Dynamic form with real-time recommendations
 - **HTMX Integration**: Seamless page updates without full reloads
 - **Responsive Design**: Mobile-first approach with modern UI/UX
 - **Progressive Enhancement**: Works without JavaScript, enhanced with HTMX
 
 ### Customer Journey
-1. **Discovery**: Landing page with value propositions
-2. **Evaluation**: Car finder tool with personalized recommendations
-3. **Decision**: Clear pricing and service options
-4. **Booking**: Streamlined reservation process
-5. **Service**: Premium delivery and ongoing support
+1. **Discovery**: Landing page with value propositions and AI search
+2. **AI Evaluation**: Natural language processing to understand needs
+3. **Recommendation**: AI-generated curated car options with match scores
+4. **Chatbot Interaction**: Follow-up questions and service customization
+5. **Decision**: Clear pricing and service options with upsells
+6. **Booking**: Streamlined reservation process with cross-sell opportunities
+7. **Service**: Premium delivery and ongoing support
+
+## 🤖 AI Search Features
+
+### Natural Language Processing
+The AI search bar uses Google Gemini AI to understand customer requests in plain English:
+
+**Example Inputs:**
+- "Luxury SUV for 7 people, hybrid, 3 days in Bangkok"
+- "Family car for weekend trip to beach, need space for kids"
+- "Professional car for business meetings, need to impress clients"
+
+**AI Parsing Output:**
+- **Passengers**: Extracted count (1-2, 3-4, 5-6, 7+)
+- **Car Type**: Inferred from context (hatchback, sedan, SUV, van, luxury)
+- **Energy Type**: Detected preference (electric, hybrid, fuel)
+- **Style**: Categorized (family, sport, luxury, practical)
+- **Duration**: Parsed rental period in days
+- **Location**: Identified destination city/country
+- **Travel Purpose**: Contextual understanding (daily, weekend, long, cargo)
+
+### AI Recommendations
+The system generates 3-5 curated car options with:
+- **Match Scores**: Percentage compatibility with request
+- **Detailed Features**: Vehicle specifications and amenities
+- **Insurance Options**: Multiple coverage levels
+- **Add-on Services**: Relevant extras (GPS, child seats, driver service)
+- **Dynamic Pricing**: Calculated based on duration and location
+
+### Interactive Chatbot
+After showing recommendations, the AI assistant provides:
+- **Contextual Follow-ups**: Questions based on car type and use case
+- **Service Suggestions**: Driver service, child seats, cargo add-ons
+- **Upsell Opportunities**: Premium insurance, maintenance programs
+- **Cross-sell Options**: Loyalty memberships, future booking discounts
 
 ## 🎯 Business Features
 
