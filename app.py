@@ -540,9 +540,8 @@ def car_finder():
         Body(
             create_header(),
             Main(
-                Container(
-                    H1("Find Your Perfect Car"),
-                    P("Answer a few questions and we'll match you with the ideal vehicle for your needs."),
+                H1("Find Your Perfect Car"),
+                P("Answer a few questions and we'll match you with the ideal vehicle for your needs."),
                     
                     Form(
                         Div(
@@ -649,7 +648,6 @@ def car_finder():
                     ),
                     
                     Div(id="results", style="margin-top: 2rem;")
-                )
             ),
             create_footer()
         )
@@ -931,10 +929,9 @@ def services():
             ),
             
             Main(
-                Container(
+                Div(
                     Div(
-                        Div(
-                            Div("🚗", cls="service-icon"),
+                        Div("🚗", cls="service-icon"),
                             H3("Car Rental"),
                             P("Flexible rental options from daily to yearly contracts"),
                             Ul(
@@ -995,7 +992,6 @@ def services():
                         ),
                         cls="service-card"
                     )
-                )
             ),
             
             create_footer()
@@ -1029,9 +1025,8 @@ def pricing():
             ),
             
             Main(
-                Container(
-                    Div(
-                        # Basic Tier
+                Div(
+                    # Basic Tier
                         Div(
                             H3("Basic"),
                             Div("$29", cls="price"),
@@ -1137,7 +1132,6 @@ def pricing():
                         ),
                         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;"
                     )
-                )
             ),
             
             create_footer()
@@ -1168,10 +1162,9 @@ def contact():
             ),
             
             Main(
-                Container(
+                Div(
                     Div(
-                        Div(
-                            H3("Contact Information"),
+                        H3("Contact Information"),
                             Div(
                                 P("📞 Phone: +1 (555) NOVA-CAR"),
                                 P("✉️ Email: hello@nova-cars.com"),
@@ -1216,7 +1209,6 @@ def contact():
                         
                         cls="contact-info"
                     )
-                )
             ),
             
             create_footer()
@@ -1234,8 +1226,7 @@ def about():
             create_header(),
             
             Main(
-                Container(
-                    H1("About Nova"),
+                H1("About Nova"),
                     H2("Our Vision"),
                     P(NOVA_IDENTITY['vision']),
                     
@@ -1277,7 +1268,6 @@ def about():
                         ),
                         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin: 2rem 0;"
                     )
-                )
             ),
             
             create_footer()
@@ -1311,8 +1301,7 @@ def ai_demo():
             ),
             
             Main(
-                Container(
-                    # Example 1
+                # Example 1
                     Div(
                         H2("Example 1: Luxury SUV Request"),
                         Div(
@@ -1417,7 +1406,6 @@ def ai_demo():
                         Div(id="demo-results", style="margin-top: 2rem;"),
                         cls="demo-step"
                     )
-                )
             ),
             
             create_footer()
