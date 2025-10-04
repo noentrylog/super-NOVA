@@ -35,10 +35,6 @@ cd super-NOVA
 
 2. Install dependencies:
 ```bash
-# Install FastHTML from source
-pip install git+https://github.com/fasthtml/fasthtml.git
-
-# Install other dependencies
 pip install -r requirements.txt
 ```
 
@@ -153,7 +149,7 @@ super-NOVA/
 docker build -t nova-cars .
 ```
 
-**Note**: The Dockerfile automatically installs FastHTML from the official GitHub repository and Google Generative AI package.
+**Note**: The Dockerfile installs FastHTML and Google Generative AI packages from PyPI.
 
 2. Run the container:
 ```bash
