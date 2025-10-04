@@ -1,2 +1,1 @@
-fasthtml
-google-genai
+google-generativeai

@@ -7,7 +7,11 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
+    git \
     && rm -rf /var/lib/apt/lists/*
+
+# Install FastHTML from source
+RUN pip install git+https://github.com/fasthtml/fasthtml.git
 
 # Copy requirements first for better caching
 COPY requirements.txt .
