@@ -269,7 +269,8 @@ def create_header():
                 Li(A("Pricing", href="/pricing")),
                 Li(A("About", href="/about")),
                 Li(A("Contact", href="/contact"))
-            )
+            ),
+            cls="navbar"
         )
     )
 
@@ -311,33 +312,56 @@ def index():
             Meta(name="viewport", content="width=device-width, initial-scale=1"),
             Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"),
             Style("""
-                .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 4rem 0; text-align: center; }
-                .hero h1 { font-size: 3rem; margin-bottom: 1rem; }
-                .hero p { font-size: 1.2rem; opacity: 0.9; margin-bottom: 2rem; }
-                .cta-button { background: #ff6b6b; border: none; padding: 1rem 2rem; font-size: 1.1rem; margin: 0.5rem; }
+                :root { --brand:#0a0a0a; --text:#111; --muted:#666; --border:rgba(0,0,0,0.08); --bg-soft:#f7f7f9; --radius:16px; --shadow:0 10px 30px rgba(0,0,0,0.08); }
+                html, body { font-family: -apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"Segoe UI\", Roboto, Inter, Arial, sans-serif; color: var(--text); }
+                .container { max-width: 1200px; }
+                .navbar { position: sticky; top: 0; z-index: 100; backdrop-filter: saturate(180%) blur(10px); background: rgba(255,255,255,0.6); border-bottom: 1px solid var(--border); }
+                .brand { font-weight: 700; letter-spacing: -0.02em; font-size: 1.2rem; color: var(--brand); }
+                nav ul { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+                nav a { color: var(--text); opacity: 0.85; }
+                nav a:hover { opacity: 1; }
+                .hero { background: linear-gradient(135deg, #eef1f5 0%, #ffffff 100%); color: #0a0a0a; padding: 5rem 0; text-align: center; border-bottom: 1px solid var(--border); }
+                .hero h1 { font-size: clamp(2.2rem, 4vw, 3.5rem); margin-bottom: 0.75rem; letter-spacing: -0.02em; font-weight: 700; }
+                .hero p { font-size: clamp(1.05rem, 1.5vw, 1.2rem); opacity: 0.8; margin-bottom: 2rem; }
+                .cta-button { border-radius: 999px; padding: 0.9rem 1.4rem; font-size: 1.05rem; margin: 0.35rem; transition: transform .2s ease, box-shadow .2s ease, background .2s ease, color .2s ease; border: 1px solid var(--border); }
+                .cta-button.primary { background: #111; color: #fff; border-color: #111; box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+                .cta-button.primary:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(0,0,0,0.15); }
+                .cta-button.secondary { background: #fff; color: #111; }
+                .cta-button.secondary:hover { transform: translateY(-1px); }
                 .features { padding: 3rem 0; }
-                .feature-card { text-align: center; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: 1rem 0; }
-                .car-finder-widget { background: #f8f9fa; padding: 2rem; border-radius: 10px; margin: 2rem 0; }
-                .pricing-card { border: 2px solid #e9ecef; border-radius: 10px; padding: 2rem; text-align: center; margin: 1rem 0; }
-                .pricing-card.featured { border-color: #667eea; transform: scale(1.05); }
-                .pricing-card h3 { color: #667eea; margin-bottom: 1rem; }
-                .price { font-size: 2rem; font-weight: bold; color: #333; margin: 1rem 0; }
+                .feature-card { text-align: center; padding: 2rem; border-radius: var(--radius); border: 1px solid var(--border); background: #fff; box-shadow: var(--shadow); margin: 1rem 0; transition: transform .2s ease, box-shadow .2s ease; }
+                .feature-card:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,0.12); }
+                .ai-search { background: #fff; padding: 2rem; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); }
+                .ai-search input[type=\"text\"] { width: 100%; padding: 1rem; font-size: 1.05rem; border-radius: 10px; border: 1px solid var(--border); }
+                .ai-search button { width: 100%; margin-top: 1rem; background: #111; color: #fff; border: none; padding: 1rem; font-size: 1.05rem; border-radius: 12px; }
+                .car-finder-widget { background: #fff; padding: 2rem; border-radius: var(--radius); margin: 2rem 0; border: 1px solid var(--border); box-shadow: var(--shadow); }
+                .car-finder-widget input[type=\"text\"] { border-radius: 10px; border: 1px solid var(--border); }
+                .car-finder-widget button { border-radius: 10px; }
+                .pricing-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; text-align: center; margin: 1rem 0; background: linear-gradient(180deg, #ffffff 0%, #fbfbfc 100%); box-shadow: var(--shadow); transition: transform .2s ease, box-shadow .2s ease; }
+                .pricing-card:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,0.12); }
+                .pricing-card.featured { border-color: #111; }
+                .pricing-card h3 { color: #111; margin-bottom: 1rem; font-weight: 700; }
+                .price { font-size: 2rem; font-weight: 700; color: #111; margin: 1rem 0; }
 
                 /* Footer grid (desktop default) */
                 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2rem; margin-top: 2rem; }
 
-                /* Make nav wrap nicely on small screens */
-                nav ul { flex-wrap: wrap; gap: 0.5rem; }
+                /* Reveal animations */
+                .reveal { animation: fadeUp .6s ease both; }
+                .reveal.delay-1 { animation-delay: .05s; }
+                .reveal.delay-2 { animation-delay: .1s; }
+                .reveal.delay-3 { animation-delay: .15s; }
+                @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
                 /* Mobile adjustments */
                 @media (max-width: 600px) {
-                    .hero { padding: 2rem 0; }
+                    .hero { padding: 2.5rem 0; }
                     .hero h1 { font-size: 2rem; }
                     .hero p { font-size: 1rem; }
                     .cta-button { width: 100%; display: block; margin: 0.5rem 0; }
                     .car-finder-widget { padding: 1rem; }
                     .features { padding: 2rem 0; }
-                    .pricing-card.featured { transform: none; }
+                    .pricing-card:hover { transform: none; }
                     .price { font-size: 1.6rem; }
                     .footer-grid { grid-template-columns: 1fr; gap: 1rem; }
                     nav ul { flex-direction: column; align-items: flex-start; }
@@ -356,8 +380,8 @@ def index():
                     P(NOVA_IDENTITY['tagline']),
                     P(NOVA_IDENTITY['mission']),
                     Div(
-                        A("Find Your Perfect Car", href="/car-finder", cls="cta-button"),
-                        A("View Our Services", href="/services", cls="cta-button", style="background: transparent; border: 2px solid white;")
+                        A("Find Your Perfect Car", href="/car-finder", cls="cta-button primary"),
+                        A("View Our Services", href="/services", cls="cta-button secondary")
                     )
                 ),
                 cls="hero"
@@ -375,14 +399,13 @@ def index():
                                     type="text", 
                                     name="ai_search", 
                                     placeholder="e.g., 'Luxury SUV for 7 people, hybrid, 3 days in Bangkok'",
-                                    style="width: 100%; padding: 1rem; font-size: 1.1rem; border-radius: 8px; border: 2px solid #667eea;",
                                     required=True
                                 ),
-                                Button("🔍 Find My Perfect Car", type="submit", hx_post="/ai-search", hx_target="#ai-results", 
-                                       style="width: 100%; margin-top: 1rem; background: #667eea; border: none; padding: 1rem; font-size: 1.1rem; border-radius: 8px; color: white;")
+                                Button("🔍 Find My Perfect Car", type="submit", hx_post="/ai-search", hx_target="#ai-results")
                             )
                         ),
-                        Div(id="ai-results", style="margin-top: 2rem;")
+                        Div(id="ai-results", style="margin-top: 2rem;"),
+                        cls="ai-search reveal"
                     ),
                     # Container already applies Main with cls="container"; avoid passing cls here to prevent conflict
                 )
@@ -440,22 +463,22 @@ def index():
                         Div(
                             H3("🎯 Personalized Matching"),
                             P("Our AI-powered system finds the perfect car based on your specific needs and preferences."),
-                            cls="feature-card"
+                            cls="feature-card reveal"
                         ),
                         Div(
                             H3("💰 Best Pricing"),
                             P("Competitive rates with flexible rental periods from daily to yearly options."),
-                            cls="feature-card"
+                            cls="feature-card reveal delay-1"
                         ),
                         Div(
                             H3("🛡️ Complete Care"),
                             P("Full insurance coverage, maintenance programs, and 24/7 customer support."),
-                            cls="feature-card"
+                            cls="feature-card reveal delay-2"
                         ),
                         Div(
                             H3("🚀 Premium Service"),
                             P("Luxury vehicles, concierge service, and white-glove treatment for discerning customers."),
-                            cls="feature-card"
+                            cls="feature-card reveal delay-3"
                         ),
                         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;"
                     )
@@ -477,7 +500,7 @@ def index():
                                 Li("24/7 customer support")
                             ),
                             Button("Get Started", cls="secondary"),
-                            cls="pricing-card"
+                            cls="pricing-card reveal"
                         ),
                         Div(
                             H3("Premium"),
@@ -489,7 +512,7 @@ def index():
                                 Li("Free maintenance included")
                             ),
                             Button("Choose Premium", cls="primary"),
-                            cls="pricing-card featured"
+                            cls="pricing-card featured reveal delay-1"
                         ),
                         Div(
                             H3("Luxury"),
@@ -501,7 +524,7 @@ def index():
                                 Li("All-inclusive maintenance")
                             ),
                             Button("Go Luxury", cls="secondary"),
-                            cls="pricing-card"
+                            cls="pricing-card reveal delay-2"
                         ),
                         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;"
                     )
