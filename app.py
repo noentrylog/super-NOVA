@@ -296,9 +296,9 @@ def create_footer():
                     P("📞 +1 (555) NOVA-CAR"),
                     P("✉️ hello@nova-cars.com"),
                     P("📍 123 Auto Street, Car City")
-                )
-            ),
-            style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2rem; margin-top: 2rem;"
+                ),
+                cls="footer-grid"
+            )
         )
     )
 
@@ -322,6 +322,28 @@ def index():
                 .pricing-card.featured { border-color: #667eea; transform: scale(1.05); }
                 .pricing-card h3 { color: #667eea; margin-bottom: 1rem; }
                 .price { font-size: 2rem; font-weight: bold; color: #333; margin: 1rem 0; }
+
+                /* Footer grid (desktop default) */
+                .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2rem; margin-top: 2rem; }
+
+                /* Make nav wrap nicely on small screens */
+                nav ul { flex-wrap: wrap; gap: 0.5rem; }
+
+                /* Mobile adjustments */
+                @media (max-width: 600px) {
+                    .hero { padding: 2rem 0; }
+                    .hero h1 { font-size: 2rem; }
+                    .hero p { font-size: 1rem; }
+                    .cta-button { width: 100%; display: block; margin: 0.5rem 0; }
+                    .car-finder-widget { padding: 1rem; }
+                    .features { padding: 2rem 0; }
+                    .pricing-card.featured { transform: none; }
+                    .price { font-size: 1.6rem; }
+                    .footer-grid { grid-template-columns: 1fr; gap: 1rem; }
+                    nav ul { flex-direction: column; align-items: flex-start; }
+                    form input[type="text"], form select, form button { font-size: 1rem; }
+                    button, .btn, .cta-button { padding: 0.875rem 1rem; }
+                }
             """)
         ),
         Body(
