@@ -223,3 +223,11 @@ For support and questions:
 ---
 
 **Nova Car Solutions** - Your Trusted Partner in Finding the Perfect Car 🚗✨
+
+## 📦 Inventory & Admin
+
+- Admin page: `http://localhost:5001/admin/cars` — add cars with name, price, image URL, and optional description.
+- Public inventory: `http://localhost:5001/inventory` — customers can browse the list.
+- Data is stored locally in `data/inventory.json`.
+
+Tip: Use direct image URLs (e.g., from your CDN or a public image host). If you want local image uploads next, I can wire up file uploads and static serving.

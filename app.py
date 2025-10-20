@@ -3,9 +3,103 @@ import json
 from typing import Dict, List, Any
 import google.generativeai as genai
 import re
+from pathlib import Path
+import uuid
+import os
 
 # Create FastHTML app
 app, rt = fast_app()
+
+# Theme: premium, glassmorphism, motion
+def theme_styles():
+    return Style(
+        """
+        :root{
+            --bg:#f7f8fb; --fg:#0a0a0a; --muted:#6b7280; --brand:#0b0b0c; --accent:#a3bffa;
+            --ring: rgba(163,191,250,0.55);
+            --glass-bg: rgba(255,255,255,0.55);
+            --glass-brd: rgba(255,255,255,0.38);
+            --mx: .5; --my: .4; /* updated by JS for dynamic light */
+        }
+        html,body{ background: var(--bg); color: var(--fg); font-family: -apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,Inter,Ubuntu,'Helvetica Neue',Arial,sans-serif; }
+        body{ 
+            background-image:
+                radial-gradient(1200px 800px at calc(var(--mx)*100%) calc(var(--my)*100%), rgba(170,190,255,0.25), rgba(255,255,255,0) 60%),
+                radial-gradient(800px 600px at 20% -10%, rgba(255,255,255,0.75), rgba(255,255,255,0) 55%);
+            transition: background-position .2s ease;
+        }
+        /* Glass utility */
+        .glass{ background: var(--glass-bg); backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%); border: 1px solid var(--glass-brd); box-shadow: 0 8px 30px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.2); }
+        /* Navbar */
+        .navbar{ position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .navbar.glass{ background: rgba(255,255,255,0.6); backdrop-filter: blur(14px) saturate(140%); }
+        nav ul li a{ transition: color .2s ease, transform .2s ease; }
+        nav ul li a:hover{ color:#111; transform: translateY(-1px); }
+        /* Hero */
+        .hero{ position: relative; overflow: hidden; padding: 4.5rem 0; }
+        .hero .container{ position: relative; }
+        .hero::before{ content:''; position:absolute; inset:-20%; background: radial-gradient(600px 300px at 70% 20%, rgba(163,191,250,0.45), rgba(255,255,255,0)); filter: blur(30px); opacity: .6; animation: floatLight 10s ease-in-out infinite alternate; }
+        @keyframes floatLight { from{ transform: translateY(-10px);} to{ transform: translateY(10px);} }
+        .hero h1{ font-size: clamp(2.2rem, 5vw, 4rem); letter-spacing: -0.02em; font-weight: 800; }
+        .hero p{ color: var(--muted); font-size: 1.125rem; }
+        /* Cards and panels */
+        .feature-card, .ai-search, .car-finder-widget, .pricing-card{ border: 1px solid rgba(0,0,0,0.06); border-radius: 18px; background: rgba(255,255,255,0.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 12px 35px rgba(0,0,0,0.08); transform: translateZ(0); }
+        .feature-card:hover, .pricing-card:hover{ transform: translateY(-4px) scale(1.01); box-shadow: 0 20px 48px rgba(0,0,0,0.14); }
+        /* Buttons */
+        button, .btn, .cta-button{ border-radius: 12px; border: 1px solid rgba(0,0,0,0.08); transition: transform .15s ease, box-shadow .2s ease, background .2s ease; }
+        .cta-button.primary{ background:#111; color:#fff; box-shadow: 0 10px 22px rgba(0,0,0,0.15); }
+        .cta-button.primary:hover{ transform: translateY(-2px); box-shadow: 0 16px 34px rgba(0,0,0,0.22); }
+        .cta-button.secondary{ background: rgba(255,255,255,0.8); }
+        /* Reveal on scroll */
+        .reveal-in{ opacity: 0; transform: translateY(10px); transition: opacity .6s ease, transform .6s ease; }
+        .reveal-in.visible{ opacity: 1; transform: translateY(0); }
+        /* Footer */
+        footer{ background: rgba(255,255,255,0.6); backdrop-filter: blur(10px); }
+        /* Parallax tilt targets */
+        .tilt{ will-change: transform; transition: transform .15s ease; transform-style: preserve-3d; }
+        /* Inventory cards */
+        .inventory-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1rem; }
+        .inventory-card{ border-radius: 16px; overflow: hidden; }
+        .inventory-card img{ width:100%; height:200px; object-fit:cover; display:block; }
+        .inventory-card .meta{ padding: 0.75rem 1rem; }
+        .muted{ color: var(--muted); }
+        @media (max-width: 600px){ .hero{ padding: 3rem 0;} }
+        """
+    )
+
+def theme_script():
+    return Script(
+        """
+        (()=>{
+          const root = document.documentElement;
+          function setLight(e){ const x = (e.clientX||innerWidth/2)/innerWidth; const y = (e.clientY||innerHeight/2)/innerHeight; root.style.setProperty('--mx', x.toFixed(3)); root.style.setProperty('--my', y.toFixed(3)); }
+          window.addEventListener('pointermove', setLight, {passive:true});
+          // Reveal on scroll
+          const io = new IntersectionObserver((entries)=>{ entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('visible'); io.unobserve(en.target);} }); }, {threshold:.12});
+          document.querySelectorAll('.reveal, .feature-card, .pricing-card').forEach(el=>{ el.classList.add('reveal-in'); io.observe(el); });
+          // Tilt micro-interactions
+          const tiltTargets = document.querySelectorAll('.feature-card, .pricing-card, .cta-button');
+          tiltTargets.forEach(el=>{
+            el.addEventListener('pointermove', (ev)=>{
+              const r = el.getBoundingClientRect();
+              const px = (ev.clientX - r.left)/r.width - .5;
+              const py = (ev.clientY - r.top)/r.height - .5;
+              el.style.transform = `rotateX(${(-py*3).toFixed(2)}deg) rotateY(${(px*5).toFixed(2)}deg) translateY(-3px)`;
+            });
+            el.addEventListener('pointerleave', ()=>{ el.style.transform=''; });
+          });
+          // Optional ambient sound toggle (off by default)
+          const toggle = document.getElementById('ambient-sound-toggle');
+          let ctx, osc, gain;
+          function stopSound(){ if(gain){ gain.gain.linearRampToValueAtTime(0, ctx.currentTime+0.3);} }
+          function startSound(){ if(!ctx){ ctx = new (window.AudioContext||window.webkitAudioContext)(); }
+            osc = ctx.createOscillator(); gain = ctx.createGain();
+            osc.type='sine'; osc.frequency.value= 110; gain.gain.value=0.005; osc.connect(gain).connect(ctx.destination); osc.start();
+          }
+          if(toggle){ toggle.addEventListener('change', (e)=>{ if(e.target.checked) startSound(); else stopSound(); }); }
+        })();
+        """
+    )
 
 # Configure Gemini AI
 GEMINI_API_KEY = "AIzaSyC2pvdNtfXN45MeE49B4eomFsv_q50J76Q"
@@ -268,9 +362,11 @@ def create_header():
                 Li(A("Services", href="/services")),
                 Li(A("Pricing", href="/pricing")),
                 Li(A("About", href="/about")),
+                Li(A("Inventory", href="/inventory")),
+                Li(A("Admin", href="/admin/cars")),
                 Li(A("Contact", href="/contact"))
             ),
-            cls="navbar"
+            cls="navbar glass"
         )
     )
 
@@ -369,6 +465,8 @@ def index():
                     button, .btn, .cta-button { padding: 0.875rem 1rem; }
                 }
             """)
+            ,
+            theme_styles()
         ),
         Body(
             create_header(),
@@ -382,6 +480,13 @@ def index():
                     Div(
                         A("Find Your Perfect Car", href="/car-finder", cls="cta-button primary"),
                         A("View Our Services", href="/services", cls="cta-button secondary")
+                    ),
+                    Div(
+                        Label(
+                            Input(type="checkbox", id="ambient-sound-toggle"),
+                            Span(" Subtle Ambient Sound"),
+                        ),
+                        style="margin-top: .75rem; color: var(--muted); font-size: .9rem;"
                     )
                 ),
                 cls="hero"
@@ -531,7 +636,8 @@ def index():
                 )
             ),
             
-            create_footer()
+            create_footer(),
+            theme_script()
         )
     )
 
@@ -799,6 +905,154 @@ def ai_search(request: Request):
         Div(id="customize-modal"),
         Div(id="service-added")
     )
+
+# -------------------------
+# Simple Inventory Feature
+# -------------------------
+
+DATA_DIR = Path("data")
+DATA_FILE = DATA_DIR / "inventory.json"
+
+def _ensure_data_file():
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    if not DATA_FILE.exists():
+        DATA_FILE.write_text("[]", encoding="utf-8")
+
+def load_inventory() -> List[Dict[str, Any]]:
+    _ensure_data_file()
+    try:
+        return json.loads(DATA_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+
+def save_inventory(items: List[Dict[str, Any]]):
+    _ensure_data_file()
+    DATA_FILE.write_text(json.dumps(items, indent=2), encoding="utf-8")
+
+def render_inventory_cards(items: List[Dict[str, Any]]):
+    if not items:
+        return P("No cars listed yet.")
+    return Div(
+        *[
+            Div(
+                Img(src=item.get("image_url", ""), alt=item.get("name", "Car")),
+                Div(
+                    H4(item.get("name", "Unnamed Car")),
+                    P(f"Price: {item.get('price', '')}"),
+                    P(item.get("description", ""), cls="muted")
+                , cls="meta"),
+                cls="inventory-card glass reveal-in"
+            ) for item in items
+        ],
+        cls="inventory-grid"
+    )
+
+@rt("/inventory")
+def inventory_page():
+    items = load_inventory()
+    return Html(
+        Head(
+            Title("Inventory - Nova"),
+            Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"),
+            theme_styles()
+        ),
+        Body(
+            create_header(),
+            Section(
+                Container(
+                    H2("Available Cars"),
+                    render_inventory_cards(items)
+                )
+            ),
+            create_footer(),
+            theme_script()
+        )
+    )
+
+def admin_table(items: List[Dict[str, Any]]):
+    if not items:
+        return P("No cars added yet.")
+    return Table(
+        Thead(Tr(Th("Image"), Th("Name"), Th("Price"), Th("Actions"))),
+        Tbody(
+            *[
+                Tr(
+                    Td(Img(src=i.get("image_url", ""), alt=i.get("name", "Car"), style="width:80px; height:50px; object-fit:cover; border-radius:6px;")),
+                    Td(i.get("name", "")),
+                    Td(i.get("price", "")),
+                    Td(
+                        Form(
+                            Button("Delete", type="submit", cls="secondary"),
+                            action=f"/admin/cars/{i.get('id')}/delete", method="post"
+                        )
+                    )
+                ) for i in items
+            ]
+        )
+    )
+
+@rt("/admin/cars")
+def admin_cars_page():
+    items = load_inventory()
+    return Html(
+        Head(
+            Title("Admin - Cars"),
+            Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"),
+            theme_styles()
+        ),
+        Body(
+            create_header(),
+            Section(
+                Container(
+                    H2("Add Car"),
+                    Form(
+                        Grid(
+                            Input(name="name", type="text", placeholder="Car name (e.g., Toyota Camry)", required=True),
+                            Input(name="price", type="text", placeholder="Price (e.g., $25,000 or $49/day)", required=True),
+                            Input(name="image_url", type="url", placeholder="Image URL (https://...)", required=True),
+                            Textarea(name="description", placeholder="Short description (optional)")
+                        ),
+                        Button("Add to Inventory", type="submit", cls="primary"),
+                        method="post", action="/admin/cars"
+                    ),
+                    HR(),
+                    H3("Current Inventory"),
+                    admin_table(items)
+                )
+            ),
+            create_footer(),
+            theme_script()
+        )
+    )
+
+@rt("/admin/cars", methods=["POST"])
+def admin_cars_add(request: Request):
+    form = request.form
+    name = (form.get("name") or "").strip()
+    price = (form.get("price") or "").strip()
+    image_url = (form.get("image_url") or "").strip()
+    description = (form.get("description") or "").strip()
+
+    if not (name and price and image_url):
+        return Div(P("Please provide name, price, and a valid image URL.", style="color:red;"), admin_cars_page())
+
+    items = load_inventory()
+    items.append({
+        "id": str(uuid.uuid4()),
+        "name": name,
+        "price": price,
+        "image_url": image_url,
+        "description": description
+    })
+    save_inventory(items)
+    return admin_cars_page()
+
+@rt("/admin/cars/<car_id>/delete", methods=["POST"])
+def admin_cars_delete(car_id: str):
+    items = load_inventory()
+    new_items = [i for i in items if i.get("id") != car_id]
+    save_inventory(new_items)
+    return admin_cars_page()
 
 @rt("/advanced-match", methods=["POST"])
 def advanced_match(request: Request):
