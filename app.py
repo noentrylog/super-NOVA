@@ -923,9 +923,9 @@ def services():
             Section(
                 Container(
                     H1("Our Services"),
-                    P("Comprehensive car solutions tailored to your needs"),
-                    cls="service-hero"
-                )
+                    P("Comprehensive car solutions tailored to your needs")
+                ),
+                cls="service-hero"
             ),
             
             Main(
@@ -1019,9 +1019,9 @@ def pricing():
             Section(
                 Container(
                     H1("Simple, Transparent Pricing"),
-                    P("Choose the plan that fits your needs and budget"),
-                    cls="pricing-hero"
-                )
+                    P("Choose the plan that fits your needs and budget")
+                ),
+                cls="pricing-hero"
             ),
             
             Main(
@@ -1156,9 +1156,9 @@ def contact():
             Section(
                 Container(
                     H1("Get in Touch"),
-                    P("We're here to help you find the perfect car solution"),
-                    cls="contact-hero"
-                )
+                    P("We're here to help you find the perfect car solution")
+                ),
+                cls="contact-hero"
             ),
             
             Main(
@@ -1295,9 +1295,9 @@ def ai_demo():
             Section(
                 Container(
                     H1("🤖 AI Search Demo"),
-                    P("See how Nova's AI understands natural language and finds your perfect car"),
-                    cls="demo-hero"
-                )
+                    P("See how Nova's AI understands natural language and finds your perfect car")
+                ),
+                cls="demo-hero"
             ),
             
             Main(
