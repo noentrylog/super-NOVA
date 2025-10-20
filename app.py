@@ -404,9 +404,9 @@ def index():
                             ),
                             Button("Find My Car", type="submit", hx_post="/car-match", hx_target="#car-results")
                         ),
-                        Div(id="car-results")
-                    ),
-                    cls="car-finder-widget"
+                        Div(id="car-results"),
+                        cls="car-finder-widget"
+                    )
                 )
             ),
             
