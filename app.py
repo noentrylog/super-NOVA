@@ -362,7 +362,7 @@ def index():
                         ),
                         Div(id="ai-results", style="margin-top: 2rem;")
                     ),
-                    cls="car-finder-widget"
+                    # Container already applies Main with cls="container"; avoid passing cls here to prevent conflict
                 )
             ),
             
