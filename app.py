@@ -121,15 +121,7 @@ def theme_script():
               setTimeout(()=> r.remove(), 600);
             }, {passive:true});
           });
-          // Optional ambient sound toggle (off by default)
-          const toggle = document.getElementById('ambient-sound-toggle');
-          let ctx, osc, gain;
-          function stopSound(){ if(gain){ gain.gain.linearRampToValueAtTime(0, ctx.currentTime+0.3);} }
-          function startSound(){ if(!ctx){ ctx = new (window.AudioContext||window.webkitAudioContext)(); }
-            osc = ctx.createOscillator(); gain = ctx.createGain();
-            osc.type='sine'; osc.frequency.value= 110; gain.gain.value=0.005; osc.connect(gain).connect(ctx.destination); osc.start();
-          }
-          if(toggle){ toggle.addEventListener('change', (e)=>{ if(e.target.checked) startSound(); else stopSound(); }); }
+          // Ambient sound removed
         })();
         """
     )
@@ -565,13 +557,6 @@ def index():
                         A("Find Your Perfect Car", href="/car-finder", cls="cta-button primary"),
                         A("View Our Services", href="/services", cls="cta-button secondary")
                     ),
-                    Div(
-                        Label(
-                            Input(type="checkbox", id="ambient-sound-toggle"),
-                            Span(" Subtle Ambient Sound"),
-                        ),
-                        style="margin-top: .75rem; color: var(--muted); font-size: .9rem;"
-                    )
                 ),
                 cls="hero"
             ),
