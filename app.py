@@ -116,17 +116,17 @@ NOVA_IDENTITY = {
 
 # Car categories and data
 CAR_CATEGORIES = {
-    "hatchback": {"name": "Hatchback", "icon": "🚗", "capacity": "2-5 passengers"},
-    "sedan": {"name": "Sedan", "icon": "🚙", "capacity": "4-5 passengers"},
-    "suv": {"name": "SUV", "icon": "🚛", "capacity": "5-7 passengers"},
-    "van": {"name": "Van", "icon": "🚐", "capacity": "7-9 passengers"},
-    "luxury": {"name": "Luxury", "icon": "🏎️", "capacity": "2-5 passengers"}
+    "hatchback": {"name": "Hatchback", "icon": "", "capacity": "2-5 passengers"},
+    "sedan": {"name": "Sedan", "icon": "", "capacity": "4-5 passengers"},
+    "suv": {"name": "SUV", "icon": "", "capacity": "5-7 passengers"},
+    "van": {"name": "Van", "icon": "", "capacity": "7-9 passengers"},
+    "luxury": {"name": "Luxury", "icon": "", "capacity": "2-5 passengers"}
 }
 
 ENERGY_TYPES = {
-    "electric": {"name": "Electric", "icon": "⚡", "description": "Zero emissions, eco-friendly"},
-    "hybrid": {"name": "Hybrid", "icon": "🔄", "description": "Best of both worlds"},
-    "fuel": {"name": "Fuel", "icon": "⛽", "description": "Traditional reliability"}
+    "electric": {"name": "Electric", "icon": "", "description": "Zero emissions, eco-friendly"},
+    "hybrid": {"name": "Hybrid", "icon": "", "description": "Best of both worlds"},
+    "fuel": {"name": "Fuel", "icon": "", "description": "Traditional reliability"}
 }
 
 # Pricing tiers
@@ -264,7 +264,7 @@ def generate_ai_recommendations(parsed_request: Dict[str, Any]) -> List[Dict[str
             "daily_price": "$89/day",
             "features": ["Premium leather seats", "Advanced safety systems", "Entertainment system", "Climate control"],
             "match_score": "98%",
-            "image": "🚛",
+            "image": "",
             "insurance_options": ["Premium coverage (+$15/day)", "Basic coverage (included)"],
             "add_ons": ["GPS Navigation (+$5/day)", "Child seats (+$10/day)", "Driver service (+$50/day)"]
         })
@@ -281,7 +281,7 @@ def generate_ai_recommendations(parsed_request: Dict[str, Any]) -> List[Dict[str
             "daily_price": "$45/day",
             "features": ["Spacious interior", "All-wheel drive", "Cargo space", "Roof rails"],
             "match_score": "92%",
-            "image": "🚙",
+            "image": "",
             "insurance_options": ["Full coverage (+$10/day)", "Basic coverage (included)"],
             "add_ons": ["GPS Navigation (+$5/day)", "Child seats (+$10/day)", "Cargo box (+$15/day)"]
         })
@@ -298,7 +298,7 @@ def generate_ai_recommendations(parsed_request: Dict[str, Any]) -> List[Dict[str
             "daily_price": "$55/day",
             "features": ["Maximum seating", "Sliding doors", "Cargo space", "Family-friendly"],
             "match_score": "95%",
-            "image": "🚐",
+            "image": "",
             "insurance_options": ["Family coverage (+$12/day)", "Basic coverage (included)"],
             "add_ons": ["Multiple child seats (+$15/day)", "GPS Navigation (+$5/day)", "Entertainment system (+$20/day)"]
         })
@@ -316,7 +316,7 @@ def generate_ai_recommendations(parsed_request: Dict[str, Any]) -> List[Dict[str
             "daily_price": "$89/day",
             "features": ["Premium amenities", "Concierge service", "White-glove treatment", "Luxury interior"],
             "match_score": "96%",
-            "image": "🏎️",
+            "image": "",
             "insurance_options": ["Premium coverage (+$20/day)", "Full coverage (included)"],
             "add_ons": ["Personal driver (+$100/day)", "Airport pickup (+$25)", "Luxury amenities (+$30/day)"]
         })
@@ -333,7 +333,7 @@ def generate_ai_recommendations(parsed_request: Dict[str, Any]) -> List[Dict[str
         "daily_price": "$35/day",
         "features": ["Reliable performance", "Good fuel economy", "Comfortable seating", "Standard features"],
         "match_score": "88%",
-        "image": "🚗",
+        "image": "",
         "insurance_options": ["Full coverage (+$8/day)", "Basic coverage (included)"],
         "add_ons": ["GPS Navigation (+$5/day)", "Child seat (+$10/day)", "Extra driver (+$5/day)"]
     })
@@ -354,8 +354,28 @@ def generate_chatbot_response(parsed_request: Dict[str, Any], recommendations: L
 
 def create_header():
     return Header(
+        # Minimal styles for mobile hamburger menu
+        Style(
+            """
+            .menu-toggle { display: none; background: none; border: none; padding: .5rem; margin-left: auto; cursor: pointer; }
+            .menu-toggle:focus { outline: 2px solid rgba(0,0,0,0.2); border-radius: 8px; }
+            .menu-toggle .bar { display: block; width: 22px; height: 2px; background: #111; margin: 4px 0; border-radius: 2px; }
+            nav ul.nav-links { display: flex; align-items: center; gap: .75rem; }
+            @media (max-width: 768px) {
+                nav ul.nav-links { display: none; width: 100%; flex-direction: column; align-items: flex-start; padding: .5rem 0; }
+                nav ul.nav-links.open { display: flex; }
+                .menu-toggle { display: inline-block; }
+            }
+            """
+        ),
         Nav(
             A("Nova", href="/", cls="brand"),
+            Button(
+                Span(cls="bar"),
+                Span(cls="bar"),
+                Span(cls="bar"),
+                id="menu-toggle", cls="menu-toggle", aria_label="Toggle menu", aria_expanded="false", aria_controls="nav-links"
+            ),
             Ul(
                 Li(A("Find Your Car", href="/car-finder")),
                 Li(A("AI Demo", href="/ai-demo")),
@@ -364,9 +384,24 @@ def create_header():
                 Li(A("About", href="/about")),
                 Li(A("Inventory", href="/inventory")),
                 Li(A("Admin", href="/admin/cars")),
-                Li(A("Contact", href="/contact"))
+                Li(A("Contact", href="/contact")),
+                id="nav-links", cls="nav-links"
             ),
             cls="navbar glass"
+        ),
+        # Tiny script to toggle the mobile menu
+        Script(
+            """
+            (function(){
+              var btn = document.getElementById('menu-toggle');
+              var links = document.getElementById('nav-links');
+              if(!btn || !links) return;
+              btn.addEventListener('click', function(){
+                var isOpen = links.classList.toggle('open');
+                btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+              });
+            })();
+            """
         )
     )
 
@@ -390,9 +425,9 @@ def create_footer():
                 ),
                 Div(
                     H4("Contact"),
-                    P("📞 +1 (555) NOVA-CAR"),
-                    P("✉️ hello@nova-cars.com"),
-                    P("📍 123 Auto Street, Car City")
+                    P("+1 (555) NOVA-CAR"),
+                    P("hello@nova-cars.com"),
+                    P("123 Auto Street, Car City")
                 ),
                 cls="footer-grid"
             )
@@ -496,7 +531,7 @@ def index():
             Section(
                 Container(
                     Div(
-                        H2("🤖 AI-Powered Car Search", style="text-align: center; margin-bottom: 2rem;"),
+                        H2("AI-Powered Car Search", style="text-align: center; margin-bottom: 2rem;"),
                         P("Just tell us what you need in plain English!", style="text-align: center; margin-bottom: 2rem;"),
                         Form(
                             Div(
@@ -506,7 +541,7 @@ def index():
                                     placeholder="e.g., 'Luxury SUV for 7 people, hybrid, 3 days in Bangkok'",
                                     required=True
                                 ),
-                                Button("🔍 Find My Perfect Car", type="submit", hx_post="/ai-search", hx_target="#ai-results")
+                                Button("Find My Perfect Car", type="submit", hx_post="/ai-search", hx_target="#ai-results")
                             )
                         ),
                         Div(id="ai-results", style="margin-top: 2rem;"),
@@ -566,22 +601,22 @@ def index():
                     H2("Why Choose Nova?", style="text-align: center; margin-bottom: 3rem;"),
                     Div(
                         Div(
-                            H3("🎯 Personalized Matching"),
+                            H3("Personalized Matching"),
                             P("Our AI-powered system finds the perfect car based on your specific needs and preferences."),
                             cls="feature-card reveal"
                         ),
                         Div(
-                            H3("💰 Best Pricing"),
+                            H3("Best Pricing"),
                             P("Competitive rates with flexible rental periods from daily to yearly options."),
                             cls="feature-card reveal delay-1"
                         ),
                         Div(
-                            H3("🛡️ Complete Care"),
+                            H3("Complete Care"),
                             P("Full insurance coverage, maintenance programs, and 24/7 customer support."),
                             cls="feature-card reveal delay-2"
                         ),
                         Div(
-                            H3("🚀 Premium Service"),
+                            H3("Premium Service"),
                             P("Luxury vehicles, concierge service, and white-glove treatment for discerning customers."),
                             cls="feature-card reveal delay-3"
                         ),
@@ -665,15 +700,15 @@ def car_match(request: Request):
     if not recommendations:
         recommendations.append({
             "name": "Popular Choice",
-            "icon": "🚗",
+            "icon": "",
             "description": "Based on your preferences, we recommend our most popular option.",
             "price": "$29/day"
         })
     
     return Div(
-        H3("🎉 Perfect Matches for You!"),
+        H3("Perfect Matches for You"),
         *[Div(
-            H4(f"{rec['icon']} {rec['name']}"),
+            H4(f"{rec['name']}"),
             P(rec['description']),
             P(f"Starting at {rec['price']}"),
             Button("Book This Car", cls="primary", style="margin-top: 1rem;")
@@ -719,23 +754,23 @@ def car_finder():
                             H3("2. Car size/type preference:"),
                             Div(
                                 Input(type="radio", name="car_type", value="hatchback", id="c1"),
-                                Label("🚗 Hatchback - Compact & efficient", for_="c1")
+                                Label("Hatchback - Compact & efficient", for_="c1")
                             ),
                             Div(
                                 Input(type="radio", name="car_type", value="sedan", id="c2"),
-                                Label("🚙 Sedan - Comfortable & stylish", for_="c2")
+                                Label("Sedan - Comfortable & stylish", for_="c2")
                             ),
                             Div(
                                 Input(type="radio", name="car_type", value="suv", id="c3"),
-                                Label("🚛 SUV - Spacious & versatile", for_="c3")
+                                Label("SUV - Spacious & versatile", for_="c3")
                             ),
                             Div(
                                 Input(type="radio", name="car_type", value="van", id="c4"),
-                                Label("🚐 Van - Maximum capacity", for_="c4")
+                                Label("Van - Maximum capacity", for_="c4")
                             ),
                             Div(
                                 Input(type="radio", name="car_type", value="luxury", id="c5"),
-                                Label("🏎️ Luxury - Premium experience", for_="c5")
+                                Label("Luxury - Premium experience", for_="c5")
                             )
                         ),
                         
@@ -763,19 +798,19 @@ def car_finder():
                             H3("4. Style preference:"),
                             Div(
                                 Input(type="radio", name="style", value="family", id="s1"),
-                                Label("👨‍👩‍👧‍👦 Family-friendly", for_="s1")
+                                Label("Family-friendly", for_="s1")
                             ),
                             Div(
                                 Input(type="radio", name="style", value="sport", id="s2"),
-                                Label("🏁 Sport & performance", for_="s2")
+                                Label("Sport & performance", for_="s2")
                             ),
                             Div(
                                 Input(type="radio", name="style", value="luxury", id="s3"),
-                                Label("✨ Luxury & comfort", for_="s3")
+                                Label("Luxury & comfort", for_="s3")
                             ),
                             Div(
                                 Input(type="radio", name="style", value="practical", id="s4"),
-                                Label("🔧 Practical & reliable", for_="s4")
+                                Label("Practical & reliable", for_="s4")
                             )
                         ),
                         
@@ -783,15 +818,15 @@ def car_finder():
                             H3("5. Energy type preference:"),
                             Div(
                                 Input(type="radio", name="energy", value="electric", id="e1"),
-                                Label("⚡ Electric - Eco-friendly & efficient", for_="e1")
+                                Label("Electric - Eco-friendly & efficient", for_="e1")
                             ),
                             Div(
                                 Input(type="radio", name="energy", value="hybrid", id="e2"),
-                                Label("🔄 Hybrid - Best of both worlds", for_="e2")
+                                Label("Hybrid - Best of both worlds", for_="e2")
                             ),
                             Div(
                                 Input(type="radio", name="energy", value="fuel", id="e3"),
-                                Label("⛽ Traditional fuel - Proven reliability", for_="e3")
+                                Label("Traditional fuel - Proven reliability", for_="e3")
                             )
                         ),
                         
@@ -825,7 +860,7 @@ def ai_search(request: Request):
     except Exception as e:
         print(f"AI search error: {e}")  # Debug output
         return Div(
-            H3("🚨 Error Processing Request"),
+            H3("Error Processing Request"),
             P("We encountered an issue processing your request. Please try again or use our traditional car finder."),
             P(f"Error details: {str(e)}"),
             Button("Use Traditional Finder", href="/car-finder", cls="secondary")
@@ -834,21 +869,21 @@ def ai_search(request: Request):
     return Div(
         # Show parsed request
         Div(
-            H3("🤖 I understood your request:"),
+            H3("I understood your request:"),
             Div(
-                P(f"👥 Passengers: {parsed_request.get('passengers', 'Not specified')}"),
-                P(f"🚗 Car Type: {parsed_request.get('car_type', 'Not specified').title()}"),
-                P(f"⚡ Energy: {parsed_request.get('energy_type', 'Not specified').title()}"),
-                P(f"🎨 Style: {parsed_request.get('style', 'Not specified').title()}"),
-                P(f"📅 Duration: {parsed_request.get('duration', 'Not specified')} days"),
-                P(f"📍 Location: {parsed_request.get('location', 'Not specified')}"),
+                P(f"Passengers: {parsed_request.get('passengers', 'Not specified')}"),
+                P(f"Car Type: {parsed_request.get('car_type', 'Not specified').title()}"),
+                P(f"Energy: {parsed_request.get('energy_type', 'Not specified').title()}"),
+                P(f"Style: {parsed_request.get('style', 'Not specified').title()}"),
+                P(f"Duration: {parsed_request.get('duration', 'Not specified')} days"),
+                P(f"Location: {parsed_request.get('location', 'Not specified')}"),
                 style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 1rem 0;"
             )
         ),
         
         # Show recommendations
         Div(
-            H3("🎯 Your Perfect Matches"),
+            H3("Your Perfect Matches"),
             *[Div(
                 Div(
                     H4(f"{rec['image']} {rec['name']} - {rec['match_score']} Match"),
@@ -889,7 +924,7 @@ def ai_search(request: Request):
         
         # Chatbot follow-up
         Div(
-            H3("💬 Nova Assistant"),
+            H3("Nova Assistant"),
             P(chatbot_response),
             Div(
                 Button("Self-drive", cls="secondary", hx_post="/add-service/self-drive", hx_target="#service-added"),
@@ -1109,7 +1144,7 @@ def advanced_match(request: Request):
         })
     
     return Div(
-        H2("🎯 Your Perfect Matches"),
+        H2("Your Perfect Matches"),
         P(f"Based on your preferences for {passengers} passengers, {car_type} type, {travel_purpose} travel, {style} style, and {energy} energy."),
         
         *[Div(
@@ -1138,7 +1173,7 @@ def checkout(car_id: str):
     """Show checkout modal with upsell opportunities"""
     return Div(
         Div(
-            H3("🛒 Checkout - Nova Premium Elite"),
+            H3("Checkout - Nova Premium Elite"),
             P("You're booking: Nova Premium Elite (Luxury SUV)"),
             
             H4("Base Rental:"),
@@ -1228,9 +1263,8 @@ def services():
             ),
             
             Main(
-                Div(
                     Div(
-                        Div("🚗", cls="service-icon"),
+                        Div(
                             H3("Car Rental"),
                             P("Flexible rental options from daily to yearly contracts"),
                             Ul(
@@ -1246,7 +1280,6 @@ def services():
                     
                     Div(
                         Div(
-                            Div("🛒", cls="service-icon"),
                             H3("Car Sales & Trade-in"),
                             P("Buy your perfect car or trade in your current vehicle"),
                             Ul(
@@ -1262,7 +1295,6 @@ def services():
                     
                     Div(
                         Div(
-                            Div("🔧", cls="service-icon"),
                             H3("Maintenance Programs"),
                             P("Keep your Nova vehicle in perfect condition"),
                             Ul(
@@ -1278,7 +1310,6 @@ def services():
                     
                     Div(
                         Div(
-                            Div("🛡️", cls="service-icon"),
                             H3("Insurance Packages"),
                             P("Comprehensive coverage options for peace of mind"),
                             Ul(
@@ -1465,10 +1496,10 @@ def contact():
                     Div(
                         H3("Contact Information"),
                             Div(
-                                P("📞 Phone: +1 (555) NOVA-CAR"),
-                                P("✉️ Email: hello@nova-cars.com"),
-                                P("📍 Address: 123 Auto Street, Car City, CC 12345"),
-                                P("🕒 Hours: Mon-Fri 8AM-8PM, Sat-Sun 9AM-6PM")
+                                P("Phone: +1 (555) NOVA-CAR"),
+                                P("Email: hello@nova-cars.com"),
+                                P("Address: 123 Auto Street, Car City, CC 12345"),
+                                P("Hours: Mon-Fri 8AM-8PM, Sat-Sun 9AM-6PM")
                             ),
                             cls="contact-card"
                         ),
@@ -1534,12 +1565,12 @@ def about():
                     
                     H2("Why Choose Nova?"),
                     Ul(
-                        Li("🎯 Personalized car matching based on your specific needs"),
-                        Li("💰 Competitive pricing with flexible rental periods"),
-                        Li("🛡️ Comprehensive insurance and maintenance programs"),
-                        Li("🚀 Premium service for luxury vehicle experiences"),
-                        Li("📱 Modern technology for seamless booking and management"),
-                        Li("🌟 24/7 customer support and roadside assistance")
+                        Li("Personalized car matching based on your specific needs"),
+                        Li("Competitive pricing with flexible rental periods"),
+                        Li("Comprehensive insurance and maintenance programs"),
+                        Li("Premium service for luxury vehicle experiences"),
+                        Li("Modern technology for seamless booking and management"),
+                        Li("24/7 customer support and roadside assistance")
                     ),
                     
                     H2("Our Story"),
@@ -1593,7 +1624,7 @@ def ai_demo():
             
             Section(
                 Container(
-                    H1("🤖 AI Search Demo"),
+                    H1("AI Search Demo"),
                     P("See how Nova's AI understands natural language and finds your perfect car")
                 ),
                 cls="demo-hero"
@@ -1604,16 +1635,16 @@ def ai_demo():
                     Div(
                         H2("Example 1: Luxury SUV Request"),
                         Div(
-                            H3("👤 Customer Input:"),
+                        H3("Customer Input:"),
                             P("Luxury SUV for 7 people, hybrid, 3 days in Bangkok", 
                               style="font-style: italic; background: #e3f2fd; padding: 1rem; border-radius: 4px;")
                         ),
                         Div(
-                            H3("🤖 AI Parsing:"),
+                            H3("AI Parsing:"),
                             P("Passengers: 7 | Style: Luxury | Type: SUV | Energy: Hybrid | Duration: 3 days | Location: Bangkok")
                         ),
                         Div(
-                            H3("🎯 AI Recommendations:"),
+                            H3("AI Recommendations:"),
                             Ul(
                                 Li("Nova Luxury Explorer - 98% Match - $267 total"),
                                 Li("Nova Adventure - 92% Match - $135 total"),
@@ -1621,28 +1652,28 @@ def ai_demo():
                             )
                         ),
                         Div(
-                            H3("💬 AI Assistant Follow-up:"),
+                            H3("AI Assistant Follow-up:"),
                             P("Great choices for 7 passengers! Would you like a driver service or self-drive? Also, do you need child seats or any cargo add-ons for your trip?")
                         ),
                         cls="demo-step"
                     ),
                     
-                    Div("⬇️", cls="flow-arrow"),
+                    Div("", cls="flow-arrow"),
                     
                     # Example 2
                     Div(
                         H2("Example 2: Family Trip Request"),
                         Div(
-                            H3("👤 Customer Input:"),
+                            H3("Customer Input:"),
                             P("Family car for weekend trip to beach, need space for kids", 
                               style="font-style: italic; background: #e3f2fd; padding: 1rem; border-radius: 4px;")
                         ),
                         Div(
-                            H3("🤖 AI Parsing:"),
+                            H3("AI Parsing:"),
                             P("Passengers: 4 | Style: Family | Type: SUV | Energy: Fuel | Duration: 2 days | Location: Beach")
                         ),
                         Div(
-                            H3("🎯 AI Recommendations:"),
+                            H3("AI Recommendations:"),
                             Ul(
                                 Li("Nova Family SUV - 95% Match - $90 total"),
                                 Li("Nova Adventure - 92% Match - $90 total"),
@@ -1650,28 +1681,28 @@ def ai_demo():
                             )
                         ),
                         Div(
-                            H3("💬 AI Assistant Follow-up:"),
+                            H3("AI Assistant Follow-up:"),
                             P("Perfect for your family beach trip! Would you like to add child seats, GPS navigation, or beach equipment storage?")
                         ),
                         cls="demo-step"
                     ),
                     
-                    Div("⬇️", cls="flow-arrow"),
+                    Div("", cls="flow-arrow"),
                     
                     # Example 3
                     Div(
                         H2("Example 3: Business Travel Request"),
                         Div(
-                            H3("👤 Customer Input:"),
+                            H3("Customer Input:"),
                             P("Professional car for business meetings, need to impress clients", 
                               style="font-style: italic; background: #e3f2fd; padding: 1rem; border-radius: 4px;")
                         ),
                         Div(
-                            H3("🤖 AI Parsing:"),
+                            H3("AI Parsing:"),
                             P("Passengers: 2 | Style: Luxury | Type: Sedan | Energy: Fuel | Duration: 5 days | Location: Business district")
                         ),
                         Div(
-                            H3("🎯 AI Recommendations:"),
+                            H3("AI Recommendations:"),
                             Ul(
                                 Li("Nova Premium Elite - 96% Match - $445 total"),
                                 Li("Nova Business Class - 94% Match - $175 total"),
@@ -1679,7 +1710,7 @@ def ai_demo():
                             )
                         ),
                         Div(
-                            H3("💬 AI Assistant Follow-up:"),
+                            H3("AI Assistant Follow-up:"),
                             P("Excellent choice for business meetings! Would you like our personal driver service, airport pickup, or luxury amenities to impress your clients?")
                         ),
                         cls="demo-step"
@@ -1687,7 +1718,7 @@ def ai_demo():
                     
                     # Try it yourself
                     Div(
-                        H2("🚀 Try It Yourself!"),
+                        H2("Try It Yourself!"),
                         P("Test the AI search with your own natural language request:"),
                         Form(
                             Div(
@@ -1698,7 +1729,7 @@ def ai_demo():
                                     style="width: 100%; padding: 1rem; font-size: 1.1rem; border-radius: 8px; border: 2px solid #667eea;",
                                     required=True
                                 ),
-                                Button("🔍 Test AI Search", type="submit", hx_post="/ai-search", hx_target="#demo-results", 
+                                Button("Test AI Search", type="submit", hx_post="/ai-search", hx_target="#demo-results", 
                                        style="width: 100%; margin-top: 1rem; background: #667eea; border: none; padding: 1rem; font-size: 1.1rem; border-radius: 8px; color: white;")
                             )
                         ),

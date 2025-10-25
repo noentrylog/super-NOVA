@@ -2,7 +2,7 @@
 
 A comprehensive car solutions platform built with FastHTML, featuring AI-powered car matching, flexible rental options, and premium customer service.
 
-## 🚗 About Nova
+## About Nova
 
 Nova is your trusted partner in finding the perfect car for you. We deliver the best, most personalized solutions to match every need through:
 
@@ -11,7 +11,7 @@ Nova is your trusted partner in finding the perfect car for you. We deliver the 
 - **Transparent Pricing**: Three tiers (Basic $29/day, Premium $49/day, Luxury $89/day) with no hidden fees
 - **Premium Service**: 24/7 support, concierge service, and white-glove treatment
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 - **Backend**: FastHTML (Python)
 - **Frontend**: HTML5, CSS3, Pico CSS Framework
@@ -19,7 +19,7 @@ Nova is your trusted partner in finding the perfect car for you. We deliver the 
 - **Interactivity**: HTMX for dynamic interactions
 - **Styling**: Custom CSS with modern gradients and responsive design
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Python 3.8+
@@ -45,7 +45,7 @@ python app.py
 
 4. Open your browser and go to `http://localhost:5001`
 
-## 📱 Features
+## Features
 
 ### Core Functionality
 - **Homepage**: Hero section with company branding and AI-powered car search
@@ -58,7 +58,7 @@ python app.py
 - **About**: Company story, values, and mission
 
 ### Interactive Elements
-- **🤖 AI-Powered Search**: Natural language car matching using Google Gemini AI
+- **AI-Powered Search**: Natural language car matching using Google Gemini AI
 - **Car Matching**: Dynamic form with real-time recommendations
 - **HTMX Integration**: Seamless page updates without full reloads
 - **Responsive Design**: Mobile-first approach with modern UI/UX
@@ -73,7 +73,7 @@ python app.py
 6. **Booking**: Streamlined reservation process with cross-sell opportunities
 7. **Service**: Premium delivery and ongoing support
 
-## 🤖 AI Search Features
+## AI Search Features
 
 ### Natural Language Processing
 The AI search bar uses Google Gemini AI to understand customer requests in plain English:
@@ -107,7 +107,7 @@ After showing recommendations, the AI assistant provides:
 - **Upsell Opportunities**: Premium insurance, maintenance programs
 - **Cross-sell Options**: Loyalty memberships, future booking discounts
 
-## 🎯 Business Features
+## Business Features
 
 ### Car Matching Algorithm
 The system considers:
@@ -128,7 +128,7 @@ The system considers:
 - **Monthly**: 30+ days (20% discount)
 - **Yearly**: 365 days (30% discount)
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 super-NOVA/
@@ -140,7 +140,7 @@ super-NOVA/
 └── README.md            # This file
 ```
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ### Build and Run with Docker
 
@@ -158,7 +158,7 @@ docker run -p 5001:5001 nova-cars
 
 3. Access the application at `http://localhost:5001`
 
-## 📊 Business Strategy
+## Business Strategy
 
 The project includes a comprehensive business strategy document (`business-strategy.md`) covering:
 
@@ -170,7 +170,7 @@ The project includes a comprehensive business strategy document (`business-strat
 - **Risk Analysis**: Market, operational, and technology risks
 - **Competitive Differentiation**: Unique value propositions
 
-## 🎨 Design Philosophy
+## Design Philosophy
 
 - **Modern & Clean**: Professional appearance with gradient backgrounds
 - **User-Centric**: Intuitive navigation and clear information hierarchy
@@ -178,7 +178,7 @@ The project includes a comprehensive business strategy document (`business-strat
 - **Accessibility**: Semantic HTML and proper contrast ratios
 - **Performance**: Fast loading with optimized assets
 
-## 🔧 Development
+## Development
 
 ### Adding New Features
 1. Define routes in `app.py` using `@rt("/path")` decorator
@@ -192,7 +192,7 @@ The project includes a comprehensive business strategy document (`business-strat
 - **Content**: Update text and copy throughout the application
 - **Features**: Add new routes and functionality as needed
 
-## 📈 Future Enhancements
+## Future Enhancements
 
 - **Database Integration**: Store customer data and bookings
 - **Payment Processing**: Integrated payment gateway
@@ -201,7 +201,7 @@ The project includes a comprehensive business strategy document (`business-strat
 - **AI Enhancement**: More sophisticated matching algorithms
 - **Analytics**: Customer behavior tracking and insights
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -209,11 +209,11 @@ The project includes a comprehensive business strategy document (`business-strat
 4. Test thoroughly
 5. Submit a pull request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 📞 Support
+## Support
 
 For support and questions:
 - Email: hello@nova-cars.com
@@ -222,9 +222,9 @@ For support and questions:
 
 ---
 
-**Nova Car Solutions** - Your Trusted Partner in Finding the Perfect Car 🚗✨
+**Nova Car Solutions** - Your Trusted Partner in Finding the Perfect Car
 
-## 📦 Inventory & Admin
+## Inventory & Admin
 
 - Admin page: `http://localhost:5001/admin/cars` — add cars with name, price, image URL, and optional description.
 - Public inventory: `http://localhost:5001/inventory` — customers can browse the list.
