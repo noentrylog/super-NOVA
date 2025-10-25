@@ -15,7 +15,7 @@ def theme_styles():
     return Style(
         """
         :root{
-            --bg:#f7f8fb; --fg:#0a0a0a; --muted:#6b7280; --brand:#0b0b0c; --accent:#a3bffa;
+            --bg:#f7f8fb; --fg:#0a0a0a; --muted:#374151; --brand:#0b0b0c; --accent:#a3bffa;
             --ring: rgba(163,191,250,0.55);
             --glass-bg: rgba(255,255,255,0.55);
             --glass-brd: rgba(255,255,255,0.38);
@@ -492,17 +492,17 @@ def index():
             Meta(name="viewport", content="width=device-width, initial-scale=1"),
             Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"),
             Style("""
-                :root { --brand:#0a0a0a; --text:#111; --muted:#666; --border:rgba(0,0,0,0.08); --bg-soft:#f7f7f9; --radius:16px; --shadow:0 10px 30px rgba(0,0,0,0.08); }
+                :root { --brand:#0a0a0a; --text:#0a0a0a; --muted:#374151; --border:rgba(0,0,0,0.08); --bg-soft:#f7f7f9; --radius:16px; --shadow:0 10px 30px rgba(0,0,0,0.08); }
                 html, body { font-family: -apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"Segoe UI\", Roboto, Inter, Arial, sans-serif; color: var(--text); }
                 .container { max-width: 1200px; }
                 .navbar { position: sticky; top: 0; z-index: 100; backdrop-filter: saturate(180%) blur(10px); background: rgba(255,255,255,0.6); border-bottom: 1px solid var(--border); }
                 .brand { font-weight: 700; letter-spacing: -0.02em; font-size: 1.2rem; color: var(--brand); }
                 nav ul { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-                nav a { color: var(--text); opacity: 0.85; }
-                nav a:hover { opacity: 1; }
+                nav a { color: var(--text); opacity: 1; }
+                nav a:hover { color: var(--text); text-decoration: underline; }
                 .hero { background: linear-gradient(135deg, #eef1f5 0%, #ffffff 100%); color: #0a0a0a; padding: 5rem 0; text-align: center; border-bottom: 1px solid var(--border); }
                 .hero h1 { font-size: clamp(2.2rem, 4vw, 3.5rem); margin-bottom: 0.75rem; letter-spacing: -0.02em; font-weight: 700; }
-                .hero p { font-size: clamp(1.05rem, 1.5vw, 1.2rem); opacity: 0.8; margin-bottom: 2rem; }
+                .hero p { font-size: clamp(1.05rem, 1.5vw, 1.2rem); opacity: 1; color: var(--text); margin-bottom: 2rem; }
                 .cta-button { border-radius: 999px; padding: 0.9rem 1.4rem; font-size: 1.05rem; margin: 0.35rem; transition: transform .2s ease, box-shadow .2s ease, background .2s ease, color .2s ease; border: 1px solid var(--border); }
                 .cta-button.primary { background: #111; color: #fff; border-color: #111; box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
                 .cta-button.primary:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(0,0,0,0.15); }
